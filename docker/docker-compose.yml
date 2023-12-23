@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+  ecommerce:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # port exposed : mysql port running inside container
+      - "3306:3306"
+    volumes:
+      - ./data.sql:/docker-entrypoint-initdb.d/data.sql
