@@ -6,6 +6,8 @@ import com.ecoomerce.sportscenter.model.TypeResponse;
 import com.ecoomerce.sportscenter.service.BrandService;
 import com.ecoomerce.sportscenter.service.ProductService;
 import com.ecoomerce.sportscenter.service.TypeService;
+import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,9 +33,24 @@ public class ProductController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ProductResponse>> getProducts(){
-        List<ProductResponse> productResponses = productService.getProducts();
-        return new ResponseEntity<>(productResponses, HttpStatus.OK);
+    public ResponseEntity<Page<ProductResponse>> getProducts(
+            @PageableDefault(size = 10)Pageable pageable,
+            @RequestParam(name="keyword", required = false) String keyword,
+            @RequestParam(name="sort", defaultValue = "name") String sort,
+            @RequestParam(name = "order", defaultValue = "asc") String order
+    ){
+        Page<ProductResponse> productResponsePage;
+        if(keyword!=null && !keyword.isEmpty()){
+            List<ProductResponse> productResponses = productService.searchProductsByName(keyword);
+            productResponsePage = new PageImpl<>(productResponses, pageable, productResponses.size());
+        }else{
+            //If no search criteria, then retrieve based on sorting options
+            Sort.Direction direction = "asc".equalsIgnoreCase(order)?Sort.Direction.ASC : Sort.Direction.DESC;
+            Sort sorting = Sort.by(direction, sort);
+
+            productResponsePage = productService.getProducts(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting));
+        }
+        return new ResponseEntity<>(productResponsePage, HttpStatus.OK);
     }
     @GetMapping("/brands")
     public ResponseEntity<List<BrandResponse>> getBrands(){
@@ -44,5 +61,11 @@ public class ProductController {
     public ResponseEntity<List<TypeResponse>> getTypes(){
         List<TypeResponse> typeResponses = typeService.getAllTypes();
         return new ResponseEntity<>(typeResponses, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductResponse>> searchProducts(@RequestParam("keyword") String keyword){
+        List<ProductResponse> productResponses = productService.searchProductsByName(keyword);
+        return new ResponseEntity<>(productResponses, HttpStatus.OK);
     }
 }

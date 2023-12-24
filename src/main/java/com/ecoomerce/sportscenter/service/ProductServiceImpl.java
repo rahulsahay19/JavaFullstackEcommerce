@@ -4,6 +4,8 @@ import com.ecoomerce.sportscenter.entity.Product;
 import com.ecoomerce.sportscenter.model.ProductResponse;
 import com.ecoomerce.sportscenter.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,15 +32,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getProducts() {
+    public Page<ProductResponse> getProducts(Pageable pageable) {
         log.info("Fetching products");
         //Retrieve products from DB
-        List<Product> productList = productRepository.findAll();
+        Page<Product> productPage = productRepository.findAll(pageable);
         //Map
-        List<ProductResponse> productResponses = productList.stream()
+        Page<ProductResponse> productResponses = productPage
+                .map(this::convertToProductResponse);
+        log.info("Fetched all products");
+        return productResponses;
+    }
+
+    @Override
+    public List<ProductResponse> searchProductsByName(String keyword) {
+        log.info("Searching product(s) by name: {}", keyword);
+        //Call the custom query Method
+        List<Product> products = productRepository.searchByName(keyword);
+        //Map
+        List<ProductResponse> productResponses = products.stream()
                 .map(this::convertToProductResponse)
                 .collect(Collectors.toList());
-        log.info("Fetched all products");
         return productResponses;
     }
 
