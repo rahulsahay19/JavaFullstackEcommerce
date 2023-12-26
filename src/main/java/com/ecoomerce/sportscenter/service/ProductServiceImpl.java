@@ -52,9 +52,35 @@ public class ProductServiceImpl implements ProductService {
         List<ProductResponse> productResponses = products.stream()
                 .map(this::convertToProductResponse)
                 .collect(Collectors.toList());
+        log.info("Fetched all products");
         return productResponses;
     }
 
+    @Override
+    public List<ProductResponse> searchProductsByBrandandType(Integer brandId, Integer typeId) {
+        log.info("Searching product(s) by brandId: {}, and typeId: {}", brandId, typeId);
+        //Call the custom query Method
+        List<Product> products = productRepository.searchByBrandAndType(brandId, typeId);
+        //Map
+        List<ProductResponse> productResponses = products.stream()
+                .map(this::convertToProductResponse)
+                .collect(Collectors.toList());
+        log.info("Fetched all products");
+        return productResponses;
+    }
+
+    @Override
+    public List<ProductResponse> searchProductsByBrandTypeAndName(Integer brandId, Integer typeId, String keyword) {
+        log.info("Searching product(s) by brandId: {}, typeId: {} and keyword: {}", brandId, typeId, keyword);
+        //Call the custom query Method
+        List<Product> products = productRepository.searchByBrandTypeAndName(brandId, typeId, keyword);
+        //Map
+        List<ProductResponse> productResponses = products.stream()
+                .map(this::convertToProductResponse)
+                .collect(Collectors.toList());
+        log.info("Fetched all products");
+        return productResponses;
+    }
 
     private ProductResponse convertToProductResponse(Product product) {
         return ProductResponse.builder()
