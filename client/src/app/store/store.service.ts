@@ -10,28 +10,13 @@ import { Brand } from '../shared/models/brand';
 export class StoreService {
 
   constructor(private http: HttpClient) { }
-  private apiUrl = 'http://localhost:8080/api/products';
+  public apiUrl = 'http://localhost:8080/api/products';
 
-  getProducts(brandId?: number, typeId?: number): Observable<ProductData>{
+  getProducts(brandId?: number, typeId?: number, url?: string): Observable<ProductData>{
     // Construct the base URL
-    let url = `${this.apiUrl}?`;
-  
-    // Check if brandId is not 0, and add it to the URL
-    if (brandId && brandId !== 0) {
-      url += `brandId=${brandId}&`;
-    }
-  
-    // Check if typeId is not 0, and add it to the URL
-    if (typeId && typeId !== 0) {
-      url += `typeId=${typeId}&`;
-    }
-  
-    // Remove the trailing '&' if it exists
-    if (url.endsWith('&')) {
-      url = url.slice(0, -1);
-    }  
+    const apiUrl = url || this.apiUrl;  
     
-    return this.http.get<ProductData>(url);
+    return this.http.get<ProductData>(apiUrl);
   }
   
   

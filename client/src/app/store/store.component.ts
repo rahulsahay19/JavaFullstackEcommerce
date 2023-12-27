@@ -16,6 +16,7 @@ export class StoreComponent implements OnInit {
   types: Type[] = [];
   selectedBrand: Brand | null = null;
   selectedType: Type | null = null;
+  selectedSort = 'asc'; //default value
   @Input() title: string = '';
   ngOnInit() {
     // Initialize selected brand and type to "All"
@@ -38,7 +39,27 @@ export class StoreComponent implements OnInit {
     const brandId = this.selectedBrand?.id;
     const typeId = this.selectedType?.id;
 
-    this.storeService.getProducts(brandId, typeId).subscribe({
+    //construct the base url
+    let url = `${this.storeService.apiUrl}?`;
+
+    //check the brand and type
+    if(brandId && brandId !==0){
+      url+= `brandId=${brandId}&`;
+    }
+
+    if(typeId && typeId !==0){
+      url+= `typeId=${typeId}&`;
+    }
+
+    if(this.selectedSort){
+      url+= `sort=name&order=${this.selectedSort}&`;
+    }
+
+    // Remove the trailing '&' if it exists
+    if (url.endsWith('&')) {
+      url = url.slice(0, -1);
+    }  
+    this.storeService.getProducts(brandId, typeId, url).subscribe({
       next: (data) => {
         this.products = data.content;
       },
@@ -69,6 +90,9 @@ export class StoreComponent implements OnInit {
   selectType(type: Type){
     //update the selected brand and fetch the products
     this.selectedType = type;
+    this.fetchProducts();
+  }
+  onSortChange(){
     this.fetchProducts();
   }
 }
