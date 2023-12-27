@@ -18,11 +18,17 @@ export class StoreComponent implements OnInit {
   selectedType: Type | null = null;
   @Input() title: string = '';
   ngOnInit() {
-    //Initialize selected brand and type
-    this.selectedBrand = null;
-    this.selectedType = null;
+    // Initialize selected brand and type to "All"
+    this.selectedBrand = { id: 0, name: 'All' };
+    this.selectedType = { id: 0, name: 'All' };
 
+    // Check if both selectedBrand and selectedType are "All" before making the initial fetch
+  if (this.selectedBrand.id === 0 && this.selectedType.id === 0) {
+    this.fetchProducts(); // Fetch all records without brand and type filtering
+  } else {
+    // Fetch products with the selected brand and type
     this.fetchProducts();
+  }
     this.getBrands();
     this.getTypes();
   }
