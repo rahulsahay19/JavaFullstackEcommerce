@@ -17,6 +17,7 @@ export class StoreComponent implements OnInit {
   selectedBrand: Brand | null = null;
   selectedType: Type | null = null;
   selectedSort = 'asc'; //default value
+  search = '';
   @Input() title: string = '';
   ngOnInit() {
     // Initialize selected brand and type to "All"
@@ -53,6 +54,11 @@ export class StoreComponent implements OnInit {
 
     if(this.selectedSort){
       url+= `sort=name&order=${this.selectedSort}&`;
+    }
+
+    //search 
+    if(this.search){
+      url+= `keyword=${this.search}&`;
     }
 
     // Remove the trailing '&' if it exists
@@ -93,6 +99,13 @@ export class StoreComponent implements OnInit {
     this.fetchProducts();
   }
   onSortChange(){
+    this.fetchProducts();
+  }
+  onSearch(){
+    this.fetchProducts();
+  }
+  onReset(){
+    this.search = '';
     this.fetchProducts();
   }
 }

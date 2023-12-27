@@ -49,10 +49,11 @@
               class="form-control me-2"
               style="width: 200px"
               placeholder="Search"
+              [(ngModel)]="search"
               type="text"
             />
-            <button class="btn btn-outline-primary mx-2">Search</button>
-            <button class="btn btn-outline-success">Reset</button>
+            <button class="btn btn-outline-primary mx-2" (click)="onSearch()">Search</button>
+            <button class="btn btn-outline-success" (click)="onReset()">Reset</button>
           </div>
         </div>
         <div class="container">
