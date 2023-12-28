@@ -4,8 +4,7 @@ export interface ProductData {
     content: Product[];
     pageable: {
         pageNumber: number;
-        pageSize: number;
-        // Add other properties as needed
+        pageSize: number;       
       };
       totalElements: number;
 }

@@ -1,0 +1,12 @@
+<div class="d-flex justify-content-center">
+    <div class="row">
+      <div class="col-xs-12 col-12">
+        <pagination
+          [totalItems]="totalElements"
+          [itemsPerPage]="pageSize"
+          [(ngModel)]="currentPage"
+          (pageChanged)="pageChanged.emit($event)"
+        ></pagination>
+      </div>
+    </div>
+  </div>

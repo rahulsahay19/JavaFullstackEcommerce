@@ -4,6 +4,7 @@ import { Product } from '../shared/models/product';
 import { Brand } from '../shared/models/brand';
 import { Type } from '../shared/models/type';
 import { PageChangedEvent } from 'ngx-bootstrap/pagination';
+import { StoreModelService } from './store.model.service';
 
 @Component({
   selector: 'app-store',
@@ -11,30 +12,19 @@ import { PageChangedEvent } from 'ngx-bootstrap/pagination';
   styleUrls: ['./store.component.scss'],
 })
 export class StoreComponent implements OnInit {
-  constructor(private storeService: StoreService) {}
-  products: Product[] = [];
-  brands: Brand[] = [];
-  types: Type[] = [];
-  selectedBrand: Brand | null = null;
-  selectedType: Type | null = null;
-  selectedSort = 'asc'; //default value
-  search = '';
-  
-  currentPage = 1;
-  page?: number;
-  pageable: any; // This will hold pagination information
-  totalElements: number = 70; // Total number of elements
-  pageSize: number = 10; // Number of items per page
-
+  constructor(
+    private storeService: StoreService,
+    public storeData: StoreModelService
+    ) {}
 
   @Input() title: string = '';
   ngOnInit() {
     // Initialize selected brand and type to "All"
-    this.selectedBrand = { id: 0, name: 'All' };
-    this.selectedType = { id: 0, name: 'All' };
+    this.storeData.selectedBrand = { id: 0, name: 'All' };
+    this.storeData.selectedType = { id: 0, name: 'All' };
 
     // Check if both selectedBrand and selectedType are "All" before making the initial fetch
-  if (this.selectedBrand.id === 0 && this.selectedType.id === 0) {
+  if (this.storeData.selectedBrand.id === 0 && this.storeData.selectedType.id === 0) {
     this.fetchProducts(); // Fetch all records without brand and type filtering
   } else {
     // Fetch products with the selected brand and type
@@ -46,9 +36,9 @@ export class StoreComponent implements OnInit {
 
   pageChanged(event: PageChangedEvent): void {
     // Check if the page has actually changed
-    if (event.page !== this.currentPage) {
-      this.currentPage = event.page;
-      this.fetchProducts(this.currentPage);
+    if (event.page !== this.storeData.currentPage) {
+      this.storeData.currentPage = event.page;
+      this.fetchProducts(this.storeData.currentPage);
     }
   }
   
@@ -58,8 +48,8 @@ export class StoreComponent implements OnInit {
     const backendPage = page - 1;
   
     // Pass the selected brand/type ids
-    const brandId = this.selectedBrand?.id;
-    const typeId = this.selectedType?.id;
+    const brandId = this.storeData.selectedBrand?.id;
+    const typeId = this.storeData.selectedType?.id;
   
     // Construct the base URL
     let url = `${this.storeService.apiUrl}?`;
@@ -74,24 +64,24 @@ export class StoreComponent implements OnInit {
     }
   
     // Search
-    if (this.search) {
-      url += `keyword=${this.search}&`;
+    if (this.storeData.search) {
+      url += `keyword=${this.storeData.search}&`;
     }
   
     // Append backendPage and size parameters to the URL
-    url += `page=${backendPage}&size=${this.pageSize}`;
+    url += `page=${backendPage}&size=${this.storeData.pageSize}`;
   
     // Include sorting parameters only when selectedSort is not empty
-    if (this.selectedSort !== 'asc') {
-      url += `&sort=name&order=${this.selectedSort}`;
+    if (this.storeData.selectedSort !== 'asc') {
+      url += `&sort=name&order=${this.storeData.selectedSort}`;
     }
   
     this.storeService.getProducts(brandId, typeId, url).subscribe({
       next: (data) => {
-        this.products = data.content;
-        this.pageable = data.pageable;
-        this.totalElements = data.totalElements;
-        this.currentPage = data.pageable.pageNumber + 1; // Adjust the currentPage
+        this.storeData.products = data.content;
+        this.storeData.pageable = data.pageable;
+        this.storeData.totalElements = data.totalElements;
+        this.storeData.currentPage = data.pageable.pageNumber + 1; // Adjust the currentPage
       },
       error: (error) => {
         console.error('Error fetching data:', error);
@@ -102,26 +92,26 @@ export class StoreComponent implements OnInit {
   
   getBrands(){
     this.storeService.getBrands().subscribe({
-      next:(response)=>(this.brands = [{id: 0, name:'All'}, ...response]),
+      next:(response)=>(this.storeData.brands = [{id: 0, name:'All'}, ...response]),
       error:(error) =>console.log(error)
     });
   }
   getTypes(){
     this.storeService.getTypes().subscribe({
-      next:(response)=>(this.types = [{id: 0, name:'All'}, ...response]),
+      next:(response)=>(this.storeData.types = [{id: 0, name:'All'}, ...response]),
       error:(error) =>console.log(error)
     });
   }
 
   selectBrand(brand: Brand){
     //update the selected brand and fetch the products
-    this.selectedBrand = brand;
+    this.storeData.selectedBrand = brand;
     this.fetchProducts();
   }
 
   selectType(type: Type){
     //update the selected brand and fetch the products
-    this.selectedType = type;
+    this.storeData.selectedType = type;
     this.fetchProducts();
   }
   onSortChange(){
@@ -131,7 +121,7 @@ export class StoreComponent implements OnInit {
     this.fetchProducts();
   }
   onReset(){
-    this.search = '';
+    this.storeData.search = '';
     this.fetchProducts();
   }
 }
