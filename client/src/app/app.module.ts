@@ -17,7 +17,7 @@ import { StoreModule } from './store/store.module';
     BrowserAnimationsModule,
     HttpClientModule,
     CoreModule,
-    StoreModule
+    StoreModule    
   ],
   providers: [],
   bootstrap: [AppComponent]

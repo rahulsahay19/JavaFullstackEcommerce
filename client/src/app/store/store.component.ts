@@ -3,6 +3,7 @@ import { StoreService } from './store.service';
 import { Product } from '../shared/models/product';
 import { Brand } from '../shared/models/brand';
 import { Type } from '../shared/models/type';
+import { PageChangedEvent } from 'ngx-bootstrap/pagination';
 
 @Component({
   selector: 'app-store',
@@ -18,6 +19,14 @@ export class StoreComponent implements OnInit {
   selectedType: Type | null = null;
   selectedSort = 'asc'; //default value
   search = '';
+  
+  currentPage = 1;
+  page?: number;
+  pageable: any; // This will hold pagination information
+  totalElements: number = 70; // Total number of elements
+  pageSize: number = 10; // Number of items per page
+
+
   @Input() title: string = '';
   ngOnInit() {
     // Initialize selected brand and type to "All"
@@ -35,45 +44,62 @@ export class StoreComponent implements OnInit {
     this.getTypes();
   }
 
-  fetchProducts(){
-    //Pass the selected brand/type ids
+  pageChanged(event: PageChangedEvent): void {
+    // Check if the page has actually changed
+    if (event.page !== this.currentPage) {
+      this.currentPage = event.page;
+      this.fetchProducts(this.currentPage);
+    }
+  }
+  
+
+  fetchProducts(page: number = 1) {
+    // Calculate the backend page (subtract 1)
+    const backendPage = page - 1;
+  
+    // Pass the selected brand/type ids
     const brandId = this.selectedBrand?.id;
     const typeId = this.selectedType?.id;
-
-    //construct the base url
+  
+    // Construct the base URL
     let url = `${this.storeService.apiUrl}?`;
-
-    //check the brand and type
-    if(brandId && brandId !==0){
-      url+= `brandId=${brandId}&`;
+  
+    // Check the brand and type
+    if (brandId && brandId !== 0) {
+      url += `brandId=${brandId}&`;
     }
-
-    if(typeId && typeId !==0){
-      url+= `typeId=${typeId}&`;
+  
+    if (typeId && typeId !== 0) {
+      url += `typeId=${typeId}&`;
     }
-
-    if(this.selectedSort){
-      url+= `sort=name&order=${this.selectedSort}&`;
+  
+    // Search
+    if (this.search) {
+      url += `keyword=${this.search}&`;
     }
-
-    //search 
-    if(this.search){
-      url+= `keyword=${this.search}&`;
+  
+    // Append backendPage and size parameters to the URL
+    url += `page=${backendPage}&size=${this.pageSize}`;
+  
+    // Include sorting parameters only when selectedSort is not empty
+    if (this.selectedSort !== 'asc') {
+      url += `&sort=name&order=${this.selectedSort}`;
     }
-
-    // Remove the trailing '&' if it exists
-    if (url.endsWith('&')) {
-      url = url.slice(0, -1);
-    }  
+  
     this.storeService.getProducts(brandId, typeId, url).subscribe({
       next: (data) => {
         this.products = data.content;
+        this.pageable = data.pageable;
+        this.totalElements = data.totalElements;
+        this.currentPage = data.pageable.pageNumber + 1; // Adjust the currentPage
       },
       error: (error) => {
         console.error('Error fetching data:', error);
       },
     });
   }
+  
+  
   getBrands(){
     this.storeService.getBrands().subscribe({
       next:(response)=>(this.brands = [{id: 0, name:'All'}, ...response]),
