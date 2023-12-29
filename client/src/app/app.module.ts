@@ -6,10 +6,11 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { StoreModule } from './store/store.module';
+import { HomeModule } from './home/home.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent    
   ],
   imports: [
     BrowserModule,
@@ -17,7 +18,8 @@ import { StoreModule } from './store/store.module';
     BrowserAnimationsModule,
     HttpClientModule,
     CoreModule,
-    StoreModule    
+    StoreModule,
+    HomeModule    
   ],
   providers: [],
   bootstrap: [AppComponent]
