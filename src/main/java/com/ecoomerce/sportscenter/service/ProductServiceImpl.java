@@ -1,6 +1,7 @@
 package com.ecoomerce.sportscenter.service;
 
 import com.ecoomerce.sportscenter.entity.Product;
+import com.ecoomerce.sportscenter.exceptions.ProductNotFoundException;
 import com.ecoomerce.sportscenter.model.ProductResponse;
 import com.ecoomerce.sportscenter.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
@@ -24,7 +25,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse getProductById(Integer productId) {
         log.info("Fetching Product by Id: {}", productId);
         Product product =productRepository.findById(productId)
-                .orElseThrow(()->new RuntimeException("Product with given id doesn't exist"));
+                .orElseThrow(()->new ProductNotFoundException("Product with given id doesn't exist"));
         //now convert the product to product response
         ProductResponse productResponse = convertToProductResponse(product);
         log.info("Fetched Product by Id: {}", productId);
