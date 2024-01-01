@@ -14,8 +14,9 @@ import java.util.stream.Collectors;
 
 @Service
 @Log4j2
-public class BasketServiceImpl implements BasketService {
+public class BasketServiceImpl implements BasketService{
     private final BasketRepository basketRepository;
+
     public BasketServiceImpl(BasketRepository basketRepository) {
         this.basketRepository = basketRepository;
     }
@@ -24,7 +25,7 @@ public class BasketServiceImpl implements BasketService {
     public List<BasketResponse> getAllBaskets() {
         log.info("Fetching all Baskets");
         List<Basket> basketList = (List<Basket>) basketRepository.findAll();
-        //now use stream operator to map with response
+        //now we will use stream operator to map with response
         List<BasketResponse> basketResponses = basketList.stream()
                 .map(this::convertToBasketResponse)
                 .collect(Collectors.toList());
@@ -36,17 +37,15 @@ public class BasketServiceImpl implements BasketService {
     public BasketResponse getBasketById(String basketId) {
         log.info("Fetching Basket by Id: {}", basketId);
         Optional<Basket> basketOptional = basketRepository.findById(basketId);
-
-        if (basketOptional.isPresent()) {
+        if(basketOptional.isPresent()){
             Basket basket = basketOptional.get();
             log.info("Fetched Basket by Id: {}", basketId);
             return convertToBasketResponse(basket);
-        } else {
-            log.info("Basket not found for Id: {}", basketId);
-            return null; // Or handle the absence of the basket appropriately
+        }else{
+            log.info("Basket not found by Id: {}", basketId);
+            return null;
         }
     }
-
 
     @Override
     public void deleteBasketById(String basketId) {
@@ -59,7 +58,7 @@ public class BasketServiceImpl implements BasketService {
     public BasketResponse createBasket(Basket basket) {
         log.info("Creating Basket");
         Basket savedBasket = basketRepository.save(basket);
-        log.info("Created Basket by Id: {}", savedBasket.getId());
+        log.info("Basket created by Id : {}", savedBasket.getId());
         return convertToBasketResponse(savedBasket);
     }
 

@@ -10,6 +10,7 @@ services:
       - "3306:3306"
     volumes:
       - ./data.sql:/docker-entrypoint-initdb.d/data.sql
+      - mysql-data:/var/lib/mysql
 
   ecommerce-redis:
     image: "redis:latest"
@@ -18,5 +19,7 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+
 volumes:
   redis-data:
+  mysql-data:
