@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,15 +35,23 @@ public class BasketServiceImpl implements BasketService {
     @Override
     public BasketResponse getBasketById(String basketId) {
         log.info("Fetching Basket by Id: {}", basketId);
-        Basket basket = basketRepository.findBasketsById(basketId);
-        log.info("Fetched Basket by Id: {}", basketId);
-        return convertToBasketResponse(basket);
+        Optional<Basket> basketOptional = basketRepository.findById(basketId);
+
+        if (basketOptional.isPresent()) {
+            Basket basket = basketOptional.get();
+            log.info("Fetched Basket by Id: {}", basketId);
+            return convertToBasketResponse(basket);
+        } else {
+            log.info("Basket not found for Id: {}", basketId);
+            return null; // Or handle the absence of the basket appropriately
+        }
     }
+
 
     @Override
     public void deleteBasketById(String basketId) {
         log.info("Deleting Basket by Id: {}", basketId);
-        basketRepository.deleteBasketById(basketId);
+        basketRepository.deleteById(basketId);
         log.info("Deleted Basket by Id: {}", basketId);
     }
 
@@ -50,11 +59,14 @@ public class BasketServiceImpl implements BasketService {
     public BasketResponse createBasket(Basket basket) {
         log.info("Creating Basket");
         Basket savedBasket = basketRepository.save(basket);
-        log.info("Created Basket by Id: ", savedBasket.getId());
+        log.info("Created Basket by Id: {}", savedBasket.getId());
         return convertToBasketResponse(savedBasket);
     }
 
     private BasketResponse convertToBasketResponse(Basket basket) {
+        if(basket == null){
+            return null;
+        }
         List<BasketItemResponse> itemResponses = basket.getItems().stream()
                 .map(this::convertToBasketItemResponse)
                 .collect(Collectors.toList());

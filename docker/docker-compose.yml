@@ -1,13 +1,22 @@
 version: '3.1'
 
 services:
-  ecommerce:
+  ecommerce-mysql:
     image: mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
-      # port exposed : mysql port running inside container
       - "3306:3306"
     volumes:
       - ./data.sql:/docker-entrypoint-initdb.d/data.sql
+
+  ecommerce-redis:
+    image: "redis:latest"
+    container_name: "my-redis-container"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+volumes:
+  redis-data:

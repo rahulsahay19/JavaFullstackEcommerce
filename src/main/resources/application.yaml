@@ -1,3 +1,10 @@
+# Spring Boot Logging Configuration
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    com.ecoomerce.sportscenter: DEBUG
+
 server:
   port: 8080
 
