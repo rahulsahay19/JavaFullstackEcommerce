@@ -27,8 +27,9 @@
         </a>
       </li>
       <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" href="#">
-          <i class="fa fa-shopping-cart"></i> Cart
+        <a class="nav-link" routerLink="/basket">
+          <i class="fa fa-shopping-cart"></i> 
+          <span class="cart-badge" *ngIf="(basketService.basketSource$ | async) as basket">{{getItemsCount(basket.items)}}</span>
         </a>
       </li>
       <li class="nav-item" routerLinkActive="active">

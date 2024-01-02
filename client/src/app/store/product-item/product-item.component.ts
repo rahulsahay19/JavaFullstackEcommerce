@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { BasketService } from 'src/app/basket/basket.service';
 import { Product } from 'src/app/shared/models/product';
 
 @Component({
@@ -9,6 +10,11 @@ import { Product } from 'src/app/shared/models/product';
 export class ProductItemComponent {
   @Input() product:Product | null = null;
 
+  constructor(private basketService: BasketService){}
+
+  additemToBasket(){
+    this.product && this.basketService.addItemToBasket(this.product);
+  }
   //Method to extract the image name from pictureUrl
   extractImageName(): string | null{
     if(this.product && this.product.pictureUrl){

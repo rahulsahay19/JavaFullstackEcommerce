@@ -1,29 +1,61 @@
 .navbar {
-    background-color: #fff; /* Background color */
-    border-bottom: 1px solid #ddd; /* Bottom border */
-  }
-  
-  /* Center the brand name */
-  .navbar-brand {
-    font-weight: bold;
-  }
-  
-  /* Style the navigation links */
-  .navbar-nav .nav-item {
-    margin-right: 10px; /* Space between nav items */
-  }
-  
-  .navbar-nav .nav-link {
-    color: #333; /* Text color */
-  }
-  
-  /* Style Font Awesome icons */
-  .navbar-nav .nav-link .fa {
-    margin-right: 5px; /* Space between icon and text */
-  }
-  
- /* Style the active link */
+  background-color: #fff; /* Background color */
+  border-bottom: 1px solid #ddd; /* Bottom border */
+  /* Ensure the navbar is fixed at the top */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/* Center the brand name */
+.navbar-brand {
+  font-weight: bold;
+  align-items: center;
+  font-weight: bold;
+}
+
+/* Style the navigation links */
+.navbar-nav .nav-item {
+  margin-right: 10px; /* Space between nav items */
+}
+
+.navbar-nav .nav-link {
+  display: flex;
+  align-items: center;
+  color: #333;
+  cursor: pointer;
+  position: relative; /* Add this line */
+}
+
+/* Style Font Awesome icons */
+.navbar-nav .nav-link .fa {
+  margin-right: 5px; /* Space between icon and text */
+}
+
+/* Style the active link */
 .nav-item.active .nav-link {
   color: #007bff; /* Active link text color */
   font-weight: bold; /* Active link text weight */
+}
+
+.cart-badge {
+  background-color: rgb(210, 74, 74);
+  color: white;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 12px;
+  position: absolute; /* Use absolute positioning within the relative parent */
+  top: -2px; /* Adjust this value to move the badge up */
+  right: 2px; /* Adjust this value as needed to align it above the cart icon */
+  transform: translateX(
+    50%
+  ); /* Use transform to precisely position the badge */
+  z-index: 1; /* Ensure the badge is displayed above other content */
+}
+
+/* Target the cart icon specifically */
+.navbar-nav .nav-link .fa-shopping-cart {
+  margin-top: 5px;
+  margin-bottom: auto;
 }
