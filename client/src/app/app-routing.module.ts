@@ -6,9 +6,9 @@ import { ServerErrorComponent } from './core/server-error/server-error.component
 
 const routes: Routes = [
   {path:'', component: HomeComponent, data:{breadcrumb: 'Home'}},
-  {path:'store', loadChildren:()=>import('./store/store.module').then(m=>m.StoreModule), data:{breadcrumb: 'Store'}},
-  {path:'basket', loadChildren:()=>import('./basket/basket.module').then(m=>m.BasketModule), data:{breadcrumb: 'Basket'}},
-  {path:'account', loadChildren:()=>import('./account/account.module').then(m=>m.AccountModule), data:{breadcrumb: 'Account'}},
+  {path:'store', loadChildren:()=>import('./store/store.module').then(m=>m.StoreModule)},
+  {path:'basket', loadChildren:()=>import('./basket/basket.module').then(m=>m.BasketModule)},
+  {path:'account', loadChildren:()=>import('./account/account.module').then(m=>m.AccountModule)},
   {path:'not-found', component: NotFoundComponent},
   {path:'server-error', component: ServerErrorComponent},
   {path:'**', redirectTo: '', pathMatch:'full'}
