@@ -59,3 +59,24 @@
   margin-top: 5px;
   margin-bottom: auto;
 }
+
+/* Correct positioning for mobile view and collapsing */
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-collapse {
+  justify-content: flex-end;
+}
+
+@media (max-width: 991px) {
+  .navbar-nav .nav-link {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Ensure the navbar doesn't overlap content */
+body {
+  padding-top: 56px; /* Adjust to the height of your navbar */
+}

@@ -14,13 +14,23 @@ export class BasketService {
   private basketTotalSource = new BehaviorSubject<BasketTotals | null>(null);
   basketTotalSource$ = this.basketTotalSource.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    // Check if there's a basket in local storage when the service is initialized
+    const storedBasket = localStorage.getItem('basket');
+    if (storedBasket) {
+      const parsedBasket = JSON.parse(storedBasket);
+      this.basketSource.next(parsedBasket);
+      this.calculateTotals();
+    }
+   }
   
   getBasket(id: string){
     return this.http.get<Basket>(this.apiUrl+'/'+id).subscribe({
       next: basket => {
         this.basketSource.next(basket);
         this.calculateTotals();
+        // Update the localStorage with the latest basket data
+        localStorage.setItem('basket', JSON.stringify(basket));
       }
     })
   }
@@ -30,6 +40,8 @@ export class BasketService {
       next: basket => {
         this.basketSource.next(basket);
         this.calculateTotals();
+        // Update the localStorage with the latest basket data
+        localStorage.setItem('basket', JSON.stringify(basket));
       }
     })
   }

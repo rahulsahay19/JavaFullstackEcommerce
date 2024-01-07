@@ -32,6 +32,7 @@
           <span class="cart-badge" *ngIf="(basketService.basketSource$ | async) as basket">{{getItemsCount(basket.items)}}</span>
         </a>
       </li>
+      <ng-container *ngIf="(currentUser$| async) === null">
       <li class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="/account/login">
           <i class="fa fa-sign-in"></i> Signin
@@ -42,6 +43,19 @@
           <i class="fa fa-user"></i> Sign Up
         </a>
       </li>
+    </ng-container>
+    <ng-container *ngIf="(currentUser$| async) as user">
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" routerLink="/account/profile">
+          Welcome, {{user.username}}
+        </a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" (click)="logout()">
+          <i class="fa fa-sign-out"></i> Log Out
+        </a>
+      </li>
+    </ng-container>
     </ul>
   </div>
 </nav>

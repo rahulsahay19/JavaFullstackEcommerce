@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { PaginationHeaderComponent } from './components/pagination-header/pagination-header.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
 
@@ -16,6 +16,7 @@ import { OrderSummaryComponent } from './components/order-summary/order-summary.
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     CarouselModule.forRoot(),
     PaginationModule.forRoot()
   ],exports:[
@@ -23,7 +24,9 @@ import { OrderSummaryComponent } from './components/order-summary/order-summary.
     PaginationHeaderComponent,
     PaginationComponent,
     CarouselModule,
-    OrderSummaryComponent
+    OrderSummaryComponent,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule { }
