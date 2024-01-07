@@ -11,7 +11,11 @@ export class BasketService {
   apiUrl = 'http://localhost:8080/api/baskets';
   private basketSource = new BehaviorSubject<Basket | null>(null);
   basketSource$ = this.basketSource.asObservable();
-  private basketTotalSource = new BehaviorSubject<BasketTotals | null>(null);
+  private basketTotalSource = new BehaviorSubject<BasketTotals>({
+    subtotal: 0,
+    shipping: 0,
+    total: 0
+  });
   basketTotalSource$ = this.basketTotalSource.asObservable();
 
   constructor(private http: HttpClient) {
@@ -23,7 +27,18 @@ export class BasketService {
       this.calculateTotals();
     }
    }
-  
+
+   updateShippingPrice(shippingPrice: number): void {
+    // Update the shipping price in the basketTotalSubject
+    const updatedBasketTotal = this.basketTotalSource.value;
+    updatedBasketTotal.shipping = shippingPrice;
+    updatedBasketTotal.total = updatedBasketTotal.subtotal + shippingPrice;
+    this.basketTotalSource.next(updatedBasketTotal);
+  }
+  clearBasket(){
+    this.basketSource.next(null);
+    localStorage.removeItem('basket_id');
+  }
   getBasket(id: string){
     return this.http.get<Basket>(this.apiUrl+'/'+id).subscribe({
       next: basket => {
@@ -121,7 +136,7 @@ export class BasketService {
     const shipping = 0;
     const subTotal = basket.items.reduce((x, y) =>(y.price * y.quantity) + x, 0);
     const total = subTotal + shipping;
-    this.basketTotalSource.next({shipping, subTotal, total});
+    this.basketTotalSource.next({shipping, subtotal: subTotal, total});
   }
   private mapProductToBasket(item: Product): BasketItem {
     return {

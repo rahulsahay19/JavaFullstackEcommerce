@@ -27,7 +27,6 @@ public class BasketController {
     }
 
     @GetMapping("/{basketId}")
-    @PreAuthorize("isAuthenticated()")
     public BasketResponse getBasketById(@PathVariable String basketId){
         return basketService.getBasketById(basketId);
     }

@@ -27,8 +27,11 @@ export class LoginComponent {
   onSubmit(){
     this.accountService.login(this.loginForm.value).subscribe({
       next: user => {
+        const redirect = this.accountService.redirectUrl ? this.accountService.redirectUrl : '/store';
+        this.router.navigateByUrl(redirect);
+        this.accountService.redirectUrl = null; //clearing the redirect url post navigation
         this.toastService.success('Successfully Logged In');
-        this.router.navigateByUrl('/store');
+        
       },
       error: () =>{
         this.toastService.error('Error Occurred during Login');
