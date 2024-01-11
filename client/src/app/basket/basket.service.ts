@@ -38,6 +38,7 @@ export class BasketService {
   clearBasket(){
     this.basketSource.next(null);
     localStorage.removeItem('basket_id');
+    localStorage.removeItem('basket');
   }
   getBasket(id: string){
     return this.http.get<Basket>(this.apiUrl+'/'+id).subscribe({
@@ -125,7 +126,9 @@ export class BasketService {
       //check if the basket is empty after removing the item
       if(basket.items.length === 0){
         //clear the basket from local storage
+        this.basketSource.next(null);
         localStorage.removeItem('basket_id');
+        localStorage.removeItem('basket');        
       }
     }
   }
